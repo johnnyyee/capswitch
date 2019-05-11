@@ -10,13 +10,13 @@ def on_release(key):
         return False
     
     elif key == keyboard.Key.caps_lock:
-    
         with controller.pressed(Key.ctrl_l):
             controller.press('c')
             controller.release('c')
             
         clipboard = pyperclip.paste().swapcase()
         pyperclip.copy(clipboard)
+        
         with controller.pressed(Key.ctrl_l):
             controller.press('v')
             controller.release('v')
