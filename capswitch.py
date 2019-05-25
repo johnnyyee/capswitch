@@ -1,46 +1,32 @@
-from pynput import keyboard
-from pynput.keyboard import Key, Controller
+from pynput.keyboard import Key, Controller, Listener
 import pyperclip
 
+# Create a controller object
 controller = Controller()
 
-def on_press(key):
-    try:
-        print('alphanumeric key {0} pressed'.format(
-            key.char))
-    except AttributeError:
-        print('special key {0} pressed'.format(
-            key))
-
 def on_release(key):
-    print('{0} released'.format(
-        key))
-    if key == keyboard.Key.esc:
-        # Stop listener
+    if key == Key.esc:
+        # Stop the listener if esc key is pressed
         return False
     
-    elif key == keyboard.Key.caps_lock:
-    
+    elif key == Key.caps_lock:
+        # Control + C to copy
         with controller.pressed(Key.ctrl_l):
             controller.press('c')
             controller.release('c')
             
+        # Take what was copied and swap the case
         clipboard = pyperclip.paste().swapcase()
+        
+        # Copy the "swap cased" text to the clipboard
         pyperclip.copy(clipboard)
+        
+        # Control + V to paste
         with controller.pressed(Key.ctrl_l):
             controller.press('v')
             controller.release('v')
 
-            
-
-# Collect events until released
-with keyboard.Listener(
-        on_press=on_press,
+# Collect events until esc is pressed
+with Listener(
         on_release=on_release) as listener:
     listener.join()
-
-"""# ...or, in a non-blocking fashion:
-listener = mouse.Listener(
-    on_press=on_press,
-    on_release=on_release)
-listener.start()"""
